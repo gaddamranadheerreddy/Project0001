@@ -1,10 +1,9 @@
 package com.scalar.productservice.Controller;
 
+import com.scalar.productservice.DTOs.FakeStoreCreateProductDto;
 import com.scalar.productservice.Services.ProductService;
 import com.scalar.productservice.models.Product;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ProductController {
@@ -17,5 +16,17 @@ public class ProductController {
     @GetMapping("/products/{id}")
     public Product getSingleProduct(@PathVariable("id") Long id){
         return productService.getProductById(id);
+    }
+
+    @PostMapping("/products")
+    public Product createProduct(@RequestBody
+                                  FakeStoreCreateProductDto requestDto){
+        return productService.createNewProduct(
+                requestDto.getTitle(),
+                requestDto.getDescription(),
+                requestDto.getImage(),
+                requestDto.getPrice(),
+                requestDto.getCategory()
+        );
     }
 }
