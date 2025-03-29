@@ -5,6 +5,8 @@ import com.scalar.productservice.Services.ProductService;
 import com.scalar.productservice.models.Product;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class ProductController {
 
@@ -28,5 +30,10 @@ public class ProductController {
                 requestDto.getPrice(),
                 requestDto.getCategory()
         );
+    }
+
+    @GetMapping("/products")
+    public List<Product> getAllProducts(){
+        return productService.allProducts();
     }
 }
