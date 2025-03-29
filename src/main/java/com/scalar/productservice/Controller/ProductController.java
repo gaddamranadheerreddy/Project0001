@@ -3,6 +3,8 @@ package com.scalar.productservice.Controller;
 import com.scalar.productservice.DTOs.FakeStoreCreateProductDto;
 import com.scalar.productservice.Services.ProductService;
 import com.scalar.productservice.models.Product;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,14 +25,18 @@ public class ProductController {
     @PostMapping("/products")
     public Product createProduct(@RequestBody
                                   FakeStoreCreateProductDto requestDto){
-        return productService.createNewProduct(
+        Product product1 =  productService.createNewProduct(
                 requestDto.getTitle(),
                 requestDto.getDescription(),
                 requestDto.getImage(),
                 requestDto.getPrice(),
                 requestDto.getCategory()
         );
-    }
+
+        ResponseEntity<Product> responseEntity = new ResponseEntity<>(product1,
+                HttpStatusCode.valueOf(201));
+        return responseEntity.getBody();
+    };
 
     @GetMapping("/products")
     public List<Product> getAllProducts(){
