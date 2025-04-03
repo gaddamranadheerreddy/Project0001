@@ -1,9 +1,9 @@
 package com.scalar.productservice.Services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scalar.productservice.DTOs.FakeStoreProductDto;
 import com.scalar.productservice.models.Product;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,24 +21,45 @@ public class FakeStoreProductService implements ProductService {
     @Override
     public Product getProductById(Long id) {
 //        FakeStoreProductDto responseDto = restTemplate.getForObject(
-//                "https://fakestoreapi.com/products/" + id,
+//                "https://fakestoreapi.com/products/"+ id,
 //                FakeStoreProductDto.class
 //        );
-//        return responseDto.toProduct();
+//        return responseDto != null ? responseDto.toProduct() : null;
 
-        ResponseEntity<FakeStoreProductDto> responseEntity = restTemplate
-                .getForEntity("https://fakestoreapi.com/products/" + id,
-                        FakeStoreProductDto.class
-                );
+//        ResponseEntity<FakeStoreProductDto> responseEntity = restTemplate
+//                .getForEntity("https://fakestoreapi.com/products/" + id,
+//                        FakeStoreProductDto.class
+//                );
+//
+//        if(responseEntity.getStatusCode() == HttpStatusCode.valueOf(404)) {
+//            //show some error to FE
+//        }
+//        else if(responseEntity.getStatusCode() == HttpStatusCode.valueOf(500)){
+//            //Tell FE that BE is not working currently
+//        }
+//
+//        return responseEntity.getBody().toProduct();
 
-        if(responseEntity.getStatusCode() == HttpStatusCode.valueOf(404)) {
-            //show some error to FE
-        }
-        else if(responseEntity.getStatusCode() == HttpStatusCode.valueOf(500)){
-            //Tell FE that BE is not working currently
-        }
+        String url1 = "https://fakestoreapi.com/products/";
+        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Accept", "application/json");
 
-        return responseEntity.getBody().toProduct();
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<FakeStoreProductDto> response1 = restTemplate.exchange(
+                url1 + id,
+                HttpMethod.GET,
+                requestEntity,
+                FakeStoreProductDto.class
+        );
+
+        FakeStoreProductDto responseDto = response1.getBody();
+        return responseDto != null ? responseDto.toProduct() : null;
+//
+//        System.out.println("response object -" + response1.getBody());
+
+//        return response1.getBody().toProduct();
+//        return objectMapper.readValue(response1.getBody(), FakeStoreProductDto.class).toProduct();
     }
 
     @Override
@@ -72,5 +93,23 @@ public class FakeStoreProductService implements ProductService {
         }
 
         return products;
+    }
+
+    @Override
+    public Product updateProductById(Long id) {
+
+        String url = "https://fakestoreapi.com/products/{id}";
+        //using exchange() method. because  SpringBoot does not have Patch
+        // and delete methods in RestTemplate.
+
+        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ResponseEntity<FakeStoreProductDto> responseEntity = restTemplate.exchange(url,
+                HttpMethod.PATCH,
+                 new HttpEntity<>(headers),
+                FakeStoreProductDto.class);
+
+        return responseEntity.getBody().toProduct();
     }
 }

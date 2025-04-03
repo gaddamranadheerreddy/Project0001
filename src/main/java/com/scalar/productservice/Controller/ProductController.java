@@ -42,4 +42,9 @@ public class ProductController {
     public List<Product> getAllProducts(){
         return productService.allProducts();
     }
+
+    @PatchMapping("/products/{id}")
+    public Product updateProduct(@RequestBody Long id){
+        return productService.updateProductById(id);
+    }
 }

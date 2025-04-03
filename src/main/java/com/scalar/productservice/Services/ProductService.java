@@ -10,4 +10,5 @@ public interface ProductService {
     public Product createNewProduct(String title, String description,
                                  String imageUrl, Double price, String category);
     public List<Product> allProducts();
+    public Product updateProductById(Long id);
 }
